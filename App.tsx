@@ -32,7 +32,9 @@ import {
   Coffee,
   Copy,
   ExternalLink,
-  Utensils
+  Utensils,
+  Check,
+  Users
 } from 'lucide-react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 
@@ -107,7 +109,7 @@ const BotIcon = () => (
 const ChatDemo: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, type: 'bot', text: '本日はご来店誠にありがとうございます😊\n早速ですがいくつか質問させてください💌' },
-    { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください。\n選択肢からお選びください。' }
+    { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください\n選択肢からお選びください' }
   ]);
   const [step, setStep] = useState(0); // 0: Gender, 1: Age, 2: Review, 3: End
   const [isTyping, setIsTyping] = useState(false);
@@ -158,7 +160,7 @@ const ChatDemo: React.FC = () => {
         { 
           id: now, 
           type: 'bot', 
-          text: '口コミの投稿にもご協力いただけますと幸いです。\n一言でも大歓迎です💌' 
+          text: '口コミの投稿にもご協力いただけますと幸いです\n一言でも大歓迎です💌' 
         },
         {
           id: now + 1,
@@ -170,7 +172,7 @@ const ChatDemo: React.FC = () => {
               </p>
               <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 text-xs text-gray-600 leading-relaxed">
                 【例文】<br/>
-                コーヒーが美味しく、料理やスイーツも大変良かったです。お店の雰囲気もとても心地よく、また来たいと思いました。
+                コーヒーが美味しく、料理やスイーツも大変良かったです　お店の雰囲気もとても心地よく、また来たいと思いました
               </div>
               <button 
                 onClick={handleCopy}
@@ -199,7 +201,7 @@ const ChatDemo: React.FC = () => {
         {
           id: now + 3,
           type: 'bot',
-          text: 'ご質問は以上となります。ご協力ありがとうございました☺️'
+          text: 'ご質問は以上となります　ご協力ありがとうございました☺️'
         }
       ]);
     }
@@ -208,7 +210,7 @@ const ChatDemo: React.FC = () => {
   const resetChat = () => {
     setMessages([
       { id: 1, type: 'bot', text: '本日はご来店誠にありがとうございます😊\n早速ですがいくつか質問させてください💌' },
-      { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください。\n選択肢からお選びください。' }
+      { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください\n選択肢からお選びください' }
     ]);
     setStep(0);
   };
@@ -329,24 +331,6 @@ const ChatDemo: React.FC = () => {
   );
 };
 
-const LaptopMockup: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className = "" }) => (
-  <div className={`relative rounded-xl shadow-2xl bg-gray-800 border-4 border-gray-800 overflow-hidden ${className}`}>
-     {/* Screen Frame */}
-    <div className="bg-white w-full h-full rounded-lg overflow-hidden flex flex-col">
-       {/* Browser Bar */}
-      <div className="bg-gray-100 border-b border-gray-200 px-4 py-2 flex gap-2 items-center">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-        </div>
-        <div className="flex-1 bg-white rounded-md h-5 mx-4 shadow-sm border border-gray-200"></div>
-      </div>
-      <img src={src} alt={alt} className="w-full h-auto block flex-1 object-cover object-top" />
-    </div>
-  </div>
-);
-
 const DashboardMockup: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className = "" }) => (
   <div className={`relative rounded-xl shadow-lg bg-white overflow-hidden ${className}`}>
     <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex gap-2 items-center">
@@ -390,10 +374,8 @@ const Header: React.FC = () => (
 const Hero: React.FC = () => {
   return (
     <section className="relative bg-gold min-h-screen flex items-center justify-center overflow-hidden py-32">
-      {/* Decorative Background - Enhanced visibility with layering */}
+      {/* Decorative Background */}
       <div className="absolute inset-0 w-full h-full pointer-events-none">
-        
-        {/* Base Texture - Subtle noise or pattern could go here, but using a very faint image for texture */}
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1920&auto=format&fit=crop" 
@@ -401,19 +383,14 @@ const Hero: React.FC = () => {
             className="w-full h-full object-cover grayscale opacity-10 mix-blend-multiply" 
           />
         </div>
-
-        {/* Feature Image - Positioned to the right, fading into gold */}
         <motion.div 
           initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 0.25, x: 0 }} // Increased opacity for better visibility
+          animate={{ opacity: 0.25, x: 0 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute top-0 right-0 w-[100%] md:w-[65%] h-full z-0"
         >
-          {/* Gradient Mask to blend image into gold background from left to right */}
           <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold/50 to-transparent z-10"></div>
-          {/* Color overlay to tint the image gold */}
           <div className="absolute inset-0 bg-gold/30 mix-blend-color z-10"></div>
-          
           <img 
             src="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1920&auto=format&fit=crop" 
             alt="Atmosphere" 
@@ -426,7 +403,7 @@ const Hero: React.FC = () => {
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 w-full flex flex-col items-center justify-center text-center">
         <FadeIn>
           <h2 className="text-white/90 font-medium tracking-[0.2em] mb-6 text-sm md:text-base font-sans drop-shadow-sm">
-            顧客評価で店舗改善を促進する
+            お客様との対話から始める、店舗づくり
           </h2>
           
           <h1 className="text-white font-serif font-medium text-4xl md:text-6xl lg:text-[4.5rem] leading-tight tracking-tight mb-8 drop-shadow-md">
@@ -435,9 +412,9 @@ const Hero: React.FC = () => {
           </h1>
           
           <p className="text-white/95 text-sm md:text-base lg:text-lg leading-relaxed mb-12 max-w-2xl mx-auto font-light drop-shadow-sm">
-            チャット形式のアンケートで、お客様の本音を気軽に収集。<br className="hidden md:block"/>
-            自動集計・AI分析で、改善アクションまでを最短距離で。<br className="hidden md:block"/>
-            長く愛され続ける店舗づくりをサポートします。
+            チャット形式のアンケートで、お客様の本音を気軽に収集<br className="hidden md:block"/>
+            こだわりが届いているかを知り、届けたい人に届ける<br className="hidden md:block"/>
+            世界観を磨き続ける店舗づくりをサポートします
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -465,17 +442,17 @@ const Problem: React.FC = () => {
     {
       icon: <MessageCircle className="w-8 h-8 text-gold" />,
       title: "声にならないまま消えている",
-      desc: "口コミサイトに書くのはごく一部。大多数の「サイレントカスタマー」の声はお店に届きません。"
+      desc: "感動しても、言葉にしないまま帰るお客様がほとんどです"
     },
     {
       icon: <HelpCircle className="w-8 h-8 text-gold" />,
       title: "こだわりが伝わっているか不明",
-      desc: "お店のコンセプトや新メニュー。お客様にどう評価されているのか、判断材料が不足しています。"
+      desc: "お店のコンセプトや新メニュー　お客様にどう受け止められているのか、判断材料が不足しています"
     },
     {
       icon: <FileText className="w-8 h-8 text-gold" />,
       title: "声を聞く仕組みがない",
-      desc: "紙のアンケートは集計が大変。忙しい営業の中で、手軽に声を拾う仕組みが必要です。"
+      desc: "紙のアンケートは集計が大変　忙しい営業の中で、手軽に声を拾う仕組みが必要です"
     }
   ];
 
@@ -485,8 +462,8 @@ const Problem: React.FC = () => {
         <FadeIn>
           <div className="text-center mb-16">
             <Pill>解決すべき課題</Pill>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-dark mb-6">お客様の声、<br className="md:hidden"/>本当に届いていますか？</h2>
-            <p className="text-text-mid leading-loose">「美味しかった」「また来たい」——そう感じても<br className="hidden md:block"/>何も言わずに帰るお客様がほとんどです。</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-dark mb-6">消えているお客様の本音を<br className="md:hidden"/>届けること</h2>
+            <p className="text-text-mid leading-loose">「美味しかった」「また来たい」「もっとこうしてほしい」—— <br className="hidden md:block"/>お客様が感じている声はほとんど消えてしまっています</p>
           </div>
         </FadeIn>
 
@@ -515,7 +492,6 @@ const FeatureChat: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
           <div className="md:w-1/2 order-2 md:order-1 flex justify-center">
             <FadeIn>
-               {/* Use the interactive ChatDemo inside PhoneMockup */}
               <div className="w-[300px] h-[600px]">
                 <PhoneMockup className="w-full h-full">
                   <ChatDemo />
@@ -528,25 +504,32 @@ const FeatureChat: React.FC = () => {
               <Pill>特徴 ①</Pill>
               <p className="text-gold font-serif font-bold tracking-wider mb-2">チャット形式アンケート</p>
               <h2 className="text-3xl md:text-5xl font-serif font-medium text-text-dark mb-8 leading-tight">
-                会話するように<br />サクッと回答
+                会話するように回答
               </h2>
-              <p className="text-text-mid leading-loose mb-8">
-                堅苦しいフォームは回答率を下げます。<br />
-                LINEのようなチャット形式で、お客様の負担を最小限に。<br />
-                直感的なUIで、高齢の方でも迷わず操作できます。
-              </p>
-              <div className="flex flex-col gap-4 text-sm text-text-dark font-medium">
-                <div className="flex items-center gap-3 justify-center md:justify-start">
-                  <CheckCircle className="w-5 h-5 text-gold flex-shrink-0" />
-                  <span>QRコードを読み取るだけ、アプリ不要</span>
+              <div className="text-text-mid leading-loose mb-8">
+                <p className="mb-4 text-base md:text-lg">
+                  LINEのようなチャット形式で、直感的に全年齢の方が迷わず操作可能<br />
+                  お客様の負担を最小限に
+                </p>
+              </div>
+              <div className="flex flex-col gap-5 text-sm text-text-dark font-medium">
+                <div className="flex items-center gap-4 justify-center md:justify-start group">
+                  <div className="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold bg-gold/5 shrink-0 group-hover:bg-gold group-hover:text-white transition-colors">
+                     <Check size={16} strokeWidth={3} />
+                  </div>
+                  <span className="text-base tracking-wide">QRコードを読み取るだけ、アプリ不要</span>
                 </div>
-                <div className="flex items-center gap-3 justify-center md:justify-start">
-                  <CheckCircle className="w-5 h-5 text-gold flex-shrink-0" />
-                  <span>設問は自由にカスタマイズ可能</span>
+                <div className="flex items-center gap-4 justify-center md:justify-start group">
+                  <div className="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold bg-gold/5 shrink-0 group-hover:bg-gold group-hover:text-white transition-colors">
+                     <Check size={16} strokeWidth={3} />
+                  </div>
+                  <span className="text-base tracking-wide">設問も出口も自由にカスタマイズ可能</span>
                 </div>
-                <div className="flex items-center gap-3 justify-center md:justify-start">
-                  <CheckCircle className="w-5 h-5 text-gold flex-shrink-0" />
-                  <span>回答率は従来の紙アンケートの約3倍</span>
+                <div className="flex items-center gap-4 justify-center md:justify-start group">
+                  <div className="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold bg-gold/5 shrink-0 group-hover:bg-gold group-hover:text-white transition-colors">
+                     <Check size={16} strokeWidth={3} />
+                  </div>
+                  <span className="text-base tracking-wide">従来の紙アンケートより回答率向上</span>
                 </div>
               </div>
             </FadeIn>
@@ -560,7 +543,6 @@ const FeatureChat: React.FC = () => {
 const FeatureAnalysis: React.FC = () => {
   return (
     <section className="py-24 bg-gold relative overflow-hidden">
-      {/* Pattern Overlay */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
       
       <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -568,11 +550,12 @@ const FeatureAnalysis: React.FC = () => {
           <FadeIn>
             <Pill color="white">特徴 ②</Pill>
             <h2 className="text-3xl md:text-5xl font-serif font-medium text-white mb-6">
-              集計・分析は自動<br />作業負担ゼロ
+              こだわりが届いているか、<br />データで見える
             </h2>
             <p className="text-white/90 leading-loose font-light">
-              回答はリアルタイムで管理画面に反映。<br />
-              感情分析やキーワード抽出で、改善のヒントを自動で可視化します。
+              回答はリアルタイムで管理画面に反映<br />
+              お客様が何に感動し、何を求めているか<br />
+              手間なく、自然と見えてきます
             </p>
           </FadeIn>
         </div>
@@ -600,64 +583,82 @@ const FeatureAnalysis: React.FC = () => {
 };
 
 const FeatureExit: React.FC = () => {
+  const features = [
+    {
+      icon: <MessageSquare size={24} />,
+      iconBg: "bg-green-100 text-green-600",
+      title: "応援してくれるお客様の声を、\n自然にお店の外へ",
+      desc: "Google口コミ・食べログ"
+    },
+    {
+      icon: <Users size={24} />,
+      iconBg: "bg-blue-100 text-blue-600",
+      title: "つながり続ける関係を、\nデジタルでも",
+      desc: "公式LINE・Instagram"
+    },
+    {
+      icon: <PenTool size={24} />,
+      iconBg: "bg-orange-100 text-orange-600",
+      title: "例文コピー機能で、\n想いを言葉にするお手伝い",
+      desc: "入力サポート"
+    }
+  ];
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row-reverse items-center gap-16 md:gap-24">
-          <div className="md:w-1/2">
-             {/* Creating a visual representation of exit flow */}
+        <div className="flex flex-col md:flex-row items-center gap-16 md:gap-20">
+          
+          {/* Left Column: Text */}
+          <div className="md:w-1/2 text-left">
             <FadeIn>
-              <div className="relative bg-offwhite p-8 md:p-12 rounded-[2.5rem] border border-gray-100">
+              <Pill>特徴 ③</Pill>
+              <p className="text-gold font-serif font-bold tracking-wider mb-4 text-lg">出口設計</p>
+              <h2 className="text-4xl md:text-5xl font-serif font-medium text-text-dark mb-8 leading-tight">
+                声を広める出口
+              </h2>
+              <div className="text-text-mid leading-loose space-y-6">
+                <p>
+                  アンケート回答後が、お客様と繋がる最大のチャンス<br />
+                  応援してくれるお客様の声を自然に広げたり、<br />
+                  LINE公式アカウントで繋がり続けたり
+                </p>
+                <p>
+                  お店の目的に合わせた「出口」を用意できます
+                </p>
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Right Column: Visual Cards */}
+          <div className="md:w-1/2 w-full">
+            <FadeIn delay={0.2}>
+              <div className="relative bg-[#F9F9F6] p-8 md:p-12 rounded-[3rem]">
                 <div className="space-y-4">
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-green-700">
-                      <MessageSquare size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-base text-text-dark">高評価のお客様</p>
-                      <p className="text-xs text-text-light font-medium mt-0.5">Google Map / 食べログへ誘導</p>
-                    </div>
-                    <ArrowRight className="ml-auto text-gray-300 w-5 h-5" />
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-700">
-                      <Smartphone size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-base text-text-dark">すべてのお客様</p>
-                      <p className="text-xs text-text-light font-medium mt-0.5">公式LINE / Instagramへ誘導</p>
-                    </div>
-                    <ArrowRight className="ml-auto text-gray-300 w-5 h-5" />
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-700">
-                      <MousePointerClick size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-base text-text-dark">例文コピー機能</p>
-                      <p className="text-xs text-text-light font-medium mt-0.5">投稿ハードルを下げる支援</p>
-                    </div>
-                    <ArrowRight className="ml-auto text-gray-300 w-5 h-5" />
-                  </div>
+                  {features.map((feature, idx) => (
+                    <motion.div 
+                      key={idx}
+                      whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)" }}
+                      className="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-5 transition-all cursor-default shadow-sm"
+                    >
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${feature.iconBg}`}>
+                        {feature.icon}
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-bold text-lg text-text-dark mb-2 leading-snug whitespace-pre-wrap">
+                          {feature.title}
+                        </h3>
+                        <p className="text-xs text-gray-400 font-medium tracking-wide bg-gray-50 inline-block px-3 py-1 rounded-full border border-gray-100">
+                          {feature.desc}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </FadeIn>
           </div>
-          <div className="md:w-1/2 text-center md:text-left">
-            <FadeIn delay={0.2}>
-              <Pill>特徴 ③</Pill>
-              <p className="text-gold font-serif font-bold tracking-wider mb-2">出口設計</p>
-              <h2 className="text-3xl md:text-5xl font-serif font-medium text-text-dark mb-8 leading-tight">
-                回答後の導線も<br />自由に設計
-              </h2>
-              <p className="text-text-mid leading-loose mb-8">
-                アンケート回答後が、お客様と繋がる最大のチャンス。<br />
-                良い評価をしてくれたお客様をGoogle口コミへ誘導したり、
-                LINE公式アカウントの登録を促したり。<br />
-                お店の目的に合わせた「出口」を用意できます。
-              </p>
-            </FadeIn>
-          </div>
+
         </div>
       </div>
     </section>
@@ -670,36 +671,36 @@ const SupportFlow: React.FC = () => {
       num: "01", 
       title: "ヒアリング", 
       icon: <ClipboardList strokeWidth={1.5} size={48} />, 
-      desc: "お店の課題と方向性を確認",
+      desc: "お店の方向性と課題を確認",
       sub: "オンライン / 対面"
     },
     { 
       num: "02", 
       title: "設問設計", 
       icon: <PenTool strokeWidth={1.5} size={48} />, 
-      desc: "最適な質問内容をご提案",
+      desc: "お客様に聞きたいことを設計",
       sub: "約1週間"
     },
     { 
       num: "03", 
       title: "出口設計", 
       icon: <Share2 strokeWidth={1.5} size={48} />, 
-      desc: "口コミ・SNSへの導線確保",
+      desc: "回答後の動線を設計",
       sub: "Googleマップ / LINE連携"
     },
     { 
       num: "04", 
-      title: "報酬設計", 
-      icon: <Gift strokeWidth={1.5} size={48} />, 
-      desc: "クーポン等の特典を検討",
-      sub: "再来店施策"
+      title: "声がけ設計", 
+      icon: <MessageCircle strokeWidth={1.5} size={48} />, 
+      desc: "協力をお願いする方法を検討",
+      sub: "POP作成支援"
     },
     { 
       num: "05", 
       title: "運用開始", 
       icon: <Smartphone strokeWidth={1.5} size={48} />, 
       desc: "QRコード設置スタート",
-      sub: "POP作成支援あり"
+      sub: "スタート支援"
     },
     { 
       num: "06", 
@@ -724,7 +725,6 @@ const SupportFlow: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 md:gap-4 relative">
             {steps.map((step, i) => (
               <React.Fragment key={i}>
-                {/* Step Item */}
                 <div className="flex-1 flex flex-col items-center text-center group min-w-[140px]">
                   <div className="font-serif text-lg font-bold text-text-dark mb-6 whitespace-nowrap">
                     {step.num}. {step.title}
@@ -742,7 +742,6 @@ const SupportFlow: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Separator */}
                 {i < steps.length - 1 && (
                   <div className="flex items-center justify-center text-gray-300 md:pt-12 self-center md:self-auto">
                     <ChevronRight size={32} className="hidden md:block" />
@@ -766,21 +765,18 @@ const VoicePower: React.FC = () => {
           <FadeIn>
             <Pill>提供価値</Pill>
             <h2 className="text-3xl md:text-5xl font-serif font-medium text-text-dark mb-4">
-              集まった声が、<br className="md:hidden" />お店を動かす。
+              声を聞いて磨く<br className="md:hidden" />声を届けて広がる
             </h2>
-            <p className="text-text-mid">収集から拡散まで、一気通貫。</p>
+            <p className="text-text-mid">収集から拡散まで、一気通貫</p>
           </FadeIn>
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 items-stretch relative">
-           {/* Center Arrow */}
            <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-gold items-center justify-center w-12 h-12 bg-white rounded-full shadow-md border border-gold/20">
             <ArrowRight size={24} />
           </div>
 
-          {/* LEFT CARD */}
           <FadeIn className="flex-1 bg-offwhite rounded-[2rem] p-8 md:p-10 border border-gray-100 flex flex-col relative overflow-hidden group">
-             {/* Header */}
              <div className="flex items-center gap-4 mb-8">
                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
                  <MessageCircle size={24} />
@@ -788,11 +784,9 @@ const VoicePower: React.FC = () => {
                <h3 className="text-xl font-bold text-text-dark font-serif tracking-wide">フィードバック・応援の収集</h3>
              </div>
              
-             {/* Visual Area (Fixed Height) */}
              <div className="h-48 relative mb-8 bg-white/50 rounded-2xl border border-dashed border-gray-200 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold/5 to-transparent opacity-50"></div>
                 
-                {/* Animated Bubbles */}
                 <motion.div 
                    animate={{ y: [20, -10, 20], opacity: [0.5, 1, 0.5] }}
                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -817,11 +811,10 @@ const VoicePower: React.FC = () => {
                 </motion.div>
              </div>
 
-             {/* Description */}
              <div className="flex-grow">
                <p className="text-text-mid text-sm leading-loose mb-6">
-                 お客様の「ありがとう」や「改善点」を可視化。<br/>
-                 こだわりが伝わっているか、何が評価されているかを確認できます。
+                 お客様の「ありがとう」や「改善点」を可視化<br/>
+                 こだわりが伝わっているか、何が評価されているかを確認できます
                </p>
                <ul className="space-y-3">
                   <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
@@ -840,9 +833,7 @@ const VoicePower: React.FC = () => {
              </div>
           </FadeIn>
 
-          {/* RIGHT CARD */}
           <FadeIn delay={0.2} className="flex-1 bg-offwhite rounded-[2rem] p-8 md:p-10 border border-gray-100 flex flex-col relative overflow-hidden group">
-             {/* Header */}
              <div className="flex items-center gap-4 mb-8">
                <div className="w-12 h-12 rounded-full bg-text-dark flex items-center justify-center text-white shrink-0">
                  <Share2 size={24} />
@@ -850,11 +841,9 @@ const VoicePower: React.FC = () => {
                <h3 className="text-xl font-bold text-text-dark font-serif tracking-wide">声を広める出口</h3>
              </div>
 
-             {/* Visual Area */}
              <div className="h-48 relative mb-8 bg-white/50 rounded-2xl border border-dashed border-gray-200 w-full flex items-center justify-center">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-200/20 to-transparent opacity-50"></div>
                 
-                {/* Icons */}
                 <div className="flex gap-4 items-center justify-center">
                    <div className="flex flex-col items-center gap-2">
                      <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
@@ -877,11 +866,9 @@ const VoicePower: React.FC = () => {
                 </div>
              </div>
 
-             {/* Description */}
              <div className="flex-grow">
                <p className="text-text-mid text-sm leading-loose mb-6">
-                 「良かった」で終わらせない。<br/>
-                 満足度の高いお客様を、自然な流れで口コミ投稿やSNSシェア、LINE登録へ誘導します。
+                 お店を気に入ったお客様が、自然と声を届けてくれる動線を用意します
                </p>
                <ul className="space-y-3">
                   <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
@@ -920,36 +907,36 @@ const Cases: React.FC = () => {
     {
       id: 1,
       image: "https://picsum.photos/600/400?random=20",
-      title: "銀座 高級鮨店",
-      desc: "インバウンド需要に対応し、多言語アンケートで評価獲得。客単価が15%向上。",
-      category: "寿司・和食"
+      title: "都内 ゴルフバー A店",
+      desc: "月間200件の回答を獲得　お客様の声をもとにサービスを改善し、リピート率が向上",
+      category: "ゴルフバー"
     },
     {
       id: 2,
       image: "https://picsum.photos/600/400?random=21",
-      title: "六本木 フレンチレストラン",
-      desc: "記念日利用の満足度を可視化。感動体験の共有で新規予約が倍増。",
-      category: "フレンチ"
+      title: "都内 ベーカリー B店",
+      desc: "月間40件の回答を獲得　新作パンへの感想をダイレクトに収集し、商品開発に活用",
+      category: "ベーカリー"
     },
     {
       id: 3,
       image: "https://picsum.photos/600/400?random=22",
-      title: "京都 老舗料亭",
-      desc: "伝統を守りながら顧客の声を取り入れ、若年層の取り込みに成功。",
-      category: "懐石料理"
+      title: "都内 美容室 C店",
+      desc: "月間50件の回答を獲得　接客の質に対するフィードバックを可視化し、スタッフ教育に活用",
+      category: "美容室"
     },
     {
       id: 4,
       image: "https://picsum.photos/600/400?random=23",
-      title: "表参道 オーガニックカフェ",
-      desc: "スタッフへの「ありがとう」を可視化し、定着率が大幅に改善。",
+      title: "大阪 カフェ D店",
+      desc: "お客様の感謝の声をスタッフに共有　モチベーション向上と離職率低下に貢献",
       category: "カフェ"
     },
     {
       id: 5,
       image: "https://picsum.photos/600/400?random=24",
-      title: "大阪 創作イタリアン",
-      desc: "季節メニューのABテストをアンケートで実施。廃棄率を削減。",
+      title: "福岡 イタリアン E店",
+      desc: "Googleマップへの自然な誘導で、星4以上の口コミが増加　新規集客に繋がった",
       category: "イタリアン"
     }
   ];
@@ -957,7 +944,6 @@ const Cases: React.FC = () => {
   return (
     <section className="py-24 bg-cream">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header with Title and Navigation */}
         <div className="flex items-end justify-between mb-12">
           <FadeIn>
             <div className="text-left">
@@ -986,7 +972,6 @@ const Cases: React.FC = () => {
           </div>
         </div>
         
-        {/* Scrollable Container */}
         <div 
           ref={scrollRef}
           className="flex gap-8 overflow-x-auto pb-8 snap-x -mx-6 px-6 md:mx-0 md:px-0 scrollbar-none"
@@ -1020,7 +1005,6 @@ const Cases: React.FC = () => {
           ))}
         </div>
         
-        {/* Mobile View All */}
         <div className="text-center mt-4 md:hidden">
              <a href="#" className="text-gold font-bold text-xs tracking-widest border-b border-gold pb-1">すべて見る</a>
         </div>
@@ -1037,13 +1021,13 @@ const Pricing: React.FC = () => {
           <Pill>利用料金</Pill>
           <p className="text-gold font-bold mb-4 tracking-widest text-xs">初期費用なし</p>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-dark mb-4">まずは、声を聞くことから</h2>
-          <p className="text-text-mid text-sm mb-16">設問設計・出口設計・報酬設計のサポート込み。</p>
+          <p className="text-text-mid text-sm mb-16">設問設計・出口設計・報酬設計のサポート込み</p>
         </FadeIn>
 
         <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
            {/* Monthly Plan */}
            <FadeIn delay={0.1} className="bg-offwhite p-8 md:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col">
-              <h3 className="text-center text-lg font-bold text-text-dark uppercase tracking-widest mb-6">Monthly</h3>
+              <h3 className="text-center text-lg font-bold text-text-dark uppercase tracking-widest mb-6">月間契約</h3>
               <div className="flex items-baseline justify-center gap-1 mb-10 text-text-dark">
                  <span className="text-3xl font-bold">¥</span>
                  <span className="text-6xl font-serif font-bold tracking-tighter">3,980</span>
@@ -1067,6 +1051,10 @@ const Pricing: React.FC = () => {
                      <Headphones className="w-6 h-6 text-gold shrink-0" />
                      <span className="text-sm font-bold text-text-mid">設問・出口設計サポート</span>
                  </div>
+                 <div className="flex items-center gap-4">
+                     <Sparkles className="w-6 h-6 text-gold shrink-0" />
+                     <span className="text-sm font-bold text-text-mid">継続的な改善提案</span>
+                 </div>
               </div>
 
               <a
@@ -1082,13 +1070,13 @@ const Pricing: React.FC = () => {
                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold text-white text-xs font-bold px-6 py-2 rounded-full whitespace-nowrap shadow-md tracking-widest">
                  おすすめ
                </div>
-               <h3 className="text-center text-lg font-bold text-gold uppercase tracking-widest mb-6">Annual</h3>
+               <h3 className="text-center text-lg font-bold text-gold uppercase tracking-widest mb-6">年間契約</h3>
                <div className="flex items-baseline justify-center gap-1 mb-2 text-text-dark">
                  <span className="text-3xl font-bold">¥</span>
                  <span className="text-7xl font-serif font-bold tracking-tighter">2,980</span>
                  <span className="text-sm font-bold ml-2">/ 店舗 / 月</span>
               </div>
-              <p className="text-center text-xs text-text-light font-bold mb-10">（年間契約）</p>
+              <p className="text-center text-xs text-text-light font-bold mb-10">（一括払い）</p>
 
               <div className="space-y-5 mb-10 flex-grow text-left">
                  <div className="flex items-center gap-4">
@@ -1122,7 +1110,7 @@ const Pricing: React.FC = () => {
            </FadeIn>
         </div>
         
-        <p className="mt-12 text-xs text-text-light font-medium">※ 表示価格は税抜きです。初期費用はかかりません。いつでも解約可能です。</p>
+        <p className="mt-12 text-xs text-text-light font-medium">※ 表示価格は税抜きです　初期費用はかかりません　いつでも解約可能です</p>
       </div>
     </section>
   );
@@ -1168,8 +1156,8 @@ const App: React.FC = () => {
                 どんな声を集めたいか<br />一緒に考えましょう
               </h2>
               <p className="text-white/90 mb-12 leading-loose text-lg font-light">
-                お店の方向性や課題をお聞かせください。<br />
-                最適な設問設計を無料でご提案します。
+                お店の方向性や課題をお聞かせください<br />
+                最適な設問設計を無料でご提案します
               </p>
               <a 
                  href="#" 
