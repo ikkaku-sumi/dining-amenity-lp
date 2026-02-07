@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { 
   MessageSquare, 
   BarChart2, 
@@ -22,9 +22,19 @@ import {
   ClipboardList,
   PenTool,
   Gift,
-  TrendingUp
+  TrendingUp,
+  QrCode,
+  Sparkles,
+  Headphones,
+  RefreshCw,
+  Star,
+  Send,
+  Coffee,
+  Copy,
+  ExternalLink,
+  Utensils
 } from 'lucide-react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 // --- Shared Components ---
 
@@ -57,24 +67,267 @@ const Pill: React.FC<{ children: React.ReactNode; color?: 'gold' | 'white' }> = 
   );
 };
 
-const PhoneMockup: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className = "" }) => (
+const PhoneMockup: React.FC<{ src?: string; alt?: string; className?: string; children?: React.ReactNode }> = ({ src, alt, className = "", children }) => (
   <div className={`relative border-gray-100 bg-gray-100 border-[8px] rounded-[2.5rem] shadow-soft overflow-hidden z-20 ${className}`}>
     <div className="h-[32px] w-[3px] bg-gray-100 absolute -left-[11px] top-[72px] rounded-l-lg"></div>
     <div className="h-[46px] w-[3px] bg-gray-100 absolute -left-[11px] top-[124px] rounded-l-lg"></div>
     <div className="h-[46px] w-[3px] bg-gray-100 absolute -left-[11px] top-[178px] rounded-l-lg"></div>
     <div className="h-[64px] w-[3px] bg-gray-100 absolute -right-[11px] top-[142px] rounded-r-lg"></div>
-    <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white relative">
+    <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white relative flex flex-col">
        {/* Mock Chat UI Header */}
-       <div className="absolute top-0 w-full h-14 bg-gold flex items-center px-4 z-10">
-         <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white mr-3">
-           <MessageSquare size={16} />
-         </div>
-         <div className="text-white text-xs font-bold tracking-widest">アンケートフォーム</div>
+       <div className="absolute top-0 w-full h-14 bg-gold flex items-center justify-center px-4 z-10 shrink-0 shadow-md">
+         <div className="text-white text-base font-bold tracking-widest">アンケート</div>
        </div>
-       <img src={src} alt={alt} className="w-full h-full object-cover pt-14" />
+       {children ? (
+         <div className="w-full h-full pt-14 bg-[#EEF0F4]">
+           {children}
+         </div>
+       ) : (
+         <img src={src} alt={alt} className="w-full h-full object-cover pt-14" />
+       )}
     </div>
   </div>
 );
+
+// --- Chat Demo Component ---
+
+type Message = {
+  id: number;
+  type: 'bot' | 'user';
+  text?: React.ReactNode;
+  content?: React.ReactNode;
+};
+
+const BotIcon = () => (
+  <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gold shadow-sm shrink-0 mr-2 overflow-hidden">
+    <Coffee size={18} />
+  </div>
+);
+
+const ChatDemo: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, type: 'bot', text: '本日はご来店誠にありがとうございます😊\n早速ですがいくつか質問させてください💌' },
+    { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください。\n選択肢からお選びください。' }
+  ]);
+  const [step, setStep] = useState(0); // 0: Gender, 1: Age, 2: Review, 3: End
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleOptionClick = async (optionText: string, nextStep: number) => {
+    // 1. Add User Message
+    setMessages(prev => [...prev, { id: Date.now(), type: 'user', text: optionText }]);
+    setStep(99); // Temporary loading state to hide options
+    
+    // 2. Show Typing Indicator
+    setIsTyping(true);
+
+    // 3. Wait and Add Bot Message
+    setTimeout(() => {
+      setIsTyping(false);
+      proceedToStep(nextStep);
+    }, 1000);
+  };
+
+  const proceedToStep = (nextStep: number) => {
+    setStep(nextStep);
+    const now = Date.now();
+
+    if (nextStep === 1) {
+      // Ask Age
+      setMessages(prev => [...prev, { 
+        id: now, 
+        type: 'bot', 
+        text: '続いて、年代を教えてください' 
+      }]);
+    } else if (nextStep === 2) {
+      // Ask Review
+      setMessages(prev => [...prev, 
+        { 
+          id: now, 
+          type: 'bot', 
+          text: '口コミの投稿にもご協力いただけますと幸いです。\n一言でも大歓迎です💌' 
+        },
+        {
+          id: now + 1,
+          type: 'bot',
+          content: (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm leading-relaxed">
+                「例文コピー」で、まとめた感想をそのままコピーして使用することもできます✏️
+              </p>
+              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 text-xs text-gray-600 leading-relaxed">
+                【例文】<br/>
+                コーヒーが美味しく、料理やスイーツも大変良かったです。お店の雰囲気もとても心地よく、また来たいと思いました。
+              </div>
+              <button 
+                onClick={handleCopy}
+                className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-bold transition-all ${copied ? 'bg-green-500 text-white' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+              >
+                {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
+                {copied ? 'コピーしました' : '例文コピー'}
+              </button>
+            </div>
+          )
+        },
+        {
+          id: now + 2,
+          type: 'bot',
+          content: (
+            <div className="flex gap-2">
+               <button className="flex-1 bg-[#3c5a99] text-white py-2 rounded-md text-xs font-bold shadow-sm hover:opacity-90">
+                 食べログ
+               </button>
+               <button className="flex-1 bg-[#4285F4] text-white py-2 rounded-md text-xs font-bold shadow-sm hover:opacity-90">
+                 Google マップ
+               </button>
+            </div>
+          )
+        },
+        {
+          id: now + 3,
+          type: 'bot',
+          text: 'ご質問は以上となります。ご協力ありがとうございました☺️'
+        }
+      ]);
+    }
+  };
+
+  const resetChat = () => {
+    setMessages([
+      { id: 1, type: 'bot', text: '本日はご来店誠にありがとうございます😊\n早速ですがいくつか質問させてください💌' },
+      { id: 2, type: 'bot', text: 'まずはお客様のことを教えてください。\n選択肢からお選びください。' }
+    ]);
+    setStep(0);
+  };
+
+  return (
+    <div className="flex flex-col h-full relative">
+      {/* Message Area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide bg-[#EEF0F4]" ref={scrollRef}>
+        <AnimatePresence initial={false}>
+          {messages.map((msg) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start items-start'}`}
+            >
+              {msg.type === 'bot' && <BotIcon />}
+              <div 
+                className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed rounded-2xl shadow-sm whitespace-pre-wrap ${
+                  msg.type === 'user' 
+                    ? 'bg-gold text-white rounded-br-none' 
+                    : 'bg-white text-gray-700 rounded-tl-none border border-gray-100'
+                }`}
+              >
+                {msg.text && msg.text}
+                {msg.content && msg.content}
+              </div>
+            </motion.div>
+          ))}
+          {isTyping && (
+             <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="flex justify-start items-start"
+            >
+              <BotIcon />
+              <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm flex gap-1 h-[42px] items-center">
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className="h-32"></div> {/* Spacer for bottom options */}
+      </div>
+
+      {/* Input Area (Dynamic Options) */}
+      <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm border-t border-gray-100 p-4 min-h-[100px] flex flex-col justify-center">
+        <AnimatePresence mode="wait">
+          
+          {/* Step 0: Gender */}
+          {step === 0 && (
+            <motion.div 
+              key="step0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="flex gap-2"
+            >
+              <button 
+                onClick={() => handleOptionClick('男性', 1)}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-full shadow-sm hover:bg-gray-50 transition-colors text-sm"
+              >
+                男性
+              </button>
+              <button 
+                onClick={() => handleOptionClick('女性', 1)}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-full shadow-sm hover:bg-gray-50 transition-colors text-sm"
+              >
+                女性
+              </button>
+            </motion.div>
+          )}
+
+          {/* Step 1: Age */}
+          {step === 1 && (
+            <motion.div 
+              key="step1"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="grid grid-cols-2 gap-2"
+            >
+              {['10代', '20~30代', '40~50代', '60代以上'].map((age) => (
+                <button 
+                  key={age}
+                  onClick={() => handleOptionClick(age, 2)}
+                  className="bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-full shadow-sm hover:bg-gray-50 transition-colors text-sm"
+                >
+                  {age}
+                </button>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Step 2: Finished (Show Reset) */}
+          {step === 2 && (
+            <motion.div 
+              key="end"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center"
+            >
+               <button 
+                onClick={resetChat}
+                className="flex items-center justify-center gap-2 w-full bg-gray-800 text-white font-bold py-3 rounded-xl shadow-md hover:bg-gray-700 transition-colors text-sm"
+              >
+                <RefreshCw size={16} /> 最初から試す
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
 
 const LaptopMockup: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className = "" }) => (
   <div className={`relative rounded-xl shadow-2xl bg-gray-800 border-4 border-gray-800 overflow-hidden ${className}`}>
@@ -136,82 +389,72 @@ const Header: React.FC = () => (
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative bg-gold pt-32 pb-12 md:pt-48 md:pb-24 overflow-hidden">
-      {/* Decorative background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[60%] bg-cream rounded-full blur-[100px]"></div>
+    <section className="relative bg-gold min-h-screen flex items-center justify-center overflow-hidden py-32">
+      {/* Decorative Background - Enhanced visibility with layering */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none">
+        
+        {/* Base Texture - Subtle noise or pattern could go here, but using a very faint image for texture */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1920&auto=format&fit=crop" 
+            alt="Texture" 
+            className="w-full h-full object-cover grayscale opacity-10 mix-blend-multiply" 
+          />
+        </div>
+
+        {/* Feature Image - Positioned to the right, fading into gold */}
+        <motion.div 
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 0.25, x: 0 }} // Increased opacity for better visibility
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute top-0 right-0 w-[100%] md:w-[65%] h-full z-0"
+        >
+          {/* Gradient Mask to blend image into gold background from left to right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold/50 to-transparent z-10"></div>
+          {/* Color overlay to tint the image gold */}
+          <div className="absolute inset-0 bg-gold/30 mix-blend-color z-10"></div>
+          
+          <img 
+            src="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1920&auto=format&fit=crop" 
+            alt="Atmosphere" 
+            className="w-full h-full object-cover object-center grayscale" 
+          />
+        </motion.div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8 relative z-10">
-        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-4 lg:gap-16">
+      {/* Main Content */}
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 w-full flex flex-col items-center justify-center text-center">
+        <FadeIn>
+          <h2 className="text-white/90 font-medium tracking-[0.2em] mb-6 text-sm md:text-base font-sans drop-shadow-sm">
+            顧客評価で店舗改善を促進する
+          </h2>
           
-          {/* Left Content */}
-          <div className="flex-1 text-center md:text-left z-10 w-full">
-            <FadeIn>
-              <h2 className="text-white/90 font-medium tracking-[0.2em] mb-6 text-sm md:text-base">
-                顧客評価で店舗改善を促進する
-              </h2>
-              <h1 className="text-white font-serif font-medium text-4xl md:text-5xl lg:text-[3.5rem] leading-tight tracking-tight mb-8">
-                声にならない声を<br />
-                お店の力に変える
-              </h1>
-              <p className="text-white/90 text-sm md:text-base lg:text-lg leading-relaxed mb-10 md:max-w-xl font-light">
-                チャット形式のアンケートで、お客様の本音を気軽に収集。<br className="hidden md:block"/>
-                自動集計・AI分析で、改善アクションまでを最短距離で。<br className="hidden md:block"/>
-                長く愛され続ける店舗づくりをサポートします。
-              </p>
-              
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                <a 
-                  href="#contact" 
-                  className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white text-gold rounded-full font-bold tracking-widest shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all"
-                >
-                  導入のご相談 <ArrowRight size={16} />
-                </a>
-                <a 
-                  href="#demo" 
-                  className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-transparent border border-white text-white rounded-full font-bold tracking-widest hover:bg-white/10 transition-all"
-                >
-                  デモを体験 <Smartphone size={20} />
-                </a>
-              </div>
-            </FadeIn>
+          <h1 className="text-white font-serif font-medium text-4xl md:text-6xl lg:text-[4.5rem] leading-tight tracking-tight mb-8 drop-shadow-md">
+            声にならない声を<br />
+            お店の力に変える
+          </h1>
+          
+          <p className="text-white/95 text-sm md:text-base lg:text-lg leading-relaxed mb-12 max-w-2xl mx-auto font-light drop-shadow-sm">
+            チャット形式のアンケートで、お客様の本音を気軽に収集。<br className="hidden md:block"/>
+            自動集計・AI分析で、改善アクションまでを最短距離で。<br className="hidden md:block"/>
+            長く愛され続ける店舗づくりをサポートします。
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+             <a 
+                href="#contact"
+                className="w-full sm:w-auto px-10 py-4 bg-white text-gold rounded-full font-bold tracking-widest shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+             >
+               導入のご相談 <ArrowRight size={16} />
+             </a>
+             <a 
+               href="#demo" 
+               className="w-full sm:w-auto px-10 py-4 border border-white text-white rounded-full font-bold tracking-widest hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2"
+             >
+               デモを体験 <Smartphone size={20} />
+             </a>
           </div>
-
-          {/* Right Visuals (3D Composition) */}
-          <div className="flex-1 w-full relative h-[400px] md:h-[500px] flex items-center justify-center perspective-1000 mt-8 md:mt-0">
-            <FadeIn delay={0.3} className="relative w-full h-full flex items-center justify-center transform-style-3d">
-              {/* Laptop Background */}
-              <motion.div 
-                className="absolute w-[90%] md:w-[120%] max-w-[800px] right-[-10%] md:right-[-20%] top-[10%] md:top-auto md:bottom-[-5%] rotate-y-12 shadow-2xl rounded-xl"
-                initial={{ rotateY: -15, rotateX: 10, opacity: 0 }}
-                animate={{ rotateY: -12, rotateX: 5, opacity: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
-              >
-                <LaptopMockup 
-                  src="https://picsum.photos/1200/800?random=10" 
-                  alt="Dashboard"
-                  className="shadow-2xl"
-                />
-              </motion.div>
-
-              {/* Phone Foreground */}
-              <motion.div 
-                className="absolute left-[5%] md:left-[10%] bottom-0 w-[180px] md:w-[220px] h-[360px] md:h-[450px] z-20"
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              >
-                <PhoneMockup 
-                  src="https://picsum.photos/300/600?random=11" 
-                  alt="Chat UI" 
-                  className="w-full h-full shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
-                />
-              </motion.div>
-            </FadeIn>
-          </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -272,9 +515,11 @@ const FeatureChat: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
           <div className="md:w-1/2 order-2 md:order-1 flex justify-center">
             <FadeIn>
-               {/* Fixed dimensions for proper mockup display */}
+               {/* Use the interactive ChatDemo inside PhoneMockup */}
               <div className="w-[300px] h-[600px]">
-                <PhoneMockup src="https://picsum.photos/300/600?random=3" alt="Chat UI" className="w-full h-full" />
+                <PhoneMockup className="w-full h-full">
+                  <ChatDemo />
+                </PhoneMockup>
               </div>
             </FadeIn>
           </div>
@@ -795,47 +1040,85 @@ const Pricing: React.FC = () => {
           <p className="text-text-mid text-sm mb-16">設問設計・出口設計・報酬設計のサポート込み。</p>
         </FadeIn>
 
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
            {/* Monthly Plan */}
-           <FadeIn delay={0.1} className="bg-offwhite p-8 rounded-[2rem] border border-gray-100 shadow-sm">
-             <h3 className="text-lg font-bold text-text-dark uppercase tracking-widest mb-4">Monthly</h3>
-             <div className="flex items-baseline justify-center gap-1 mb-2">
-               <span className="text-lg text-text-dark">¥</span>
-               <span className="text-5xl font-serif font-semibold text-text-dark">3,980</span>
-             </div>
-             <p className="text-xs text-text-light mb-8 font-medium">/ 店舗 / 月</p>
-             <ul className="text-left space-y-4 mb-8 text-sm text-text-mid font-medium">
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gray-300" />チャットアンケート機能</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gray-300" />管理画面・分析ダッシュボード</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gray-300" />QRコード発行</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gray-300" />設問・出口設計サポート</li>
-             </ul>
+           <FadeIn delay={0.1} className="bg-offwhite p-8 md:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col">
+              <h3 className="text-center text-lg font-bold text-text-dark uppercase tracking-widest mb-6">Monthly</h3>
+              <div className="flex items-baseline justify-center gap-1 mb-10 text-text-dark">
+                 <span className="text-3xl font-bold">¥</span>
+                 <span className="text-6xl font-serif font-bold tracking-tighter">3,980</span>
+                 <span className="text-sm font-bold ml-2">/ 店舗 / 月</span>
+              </div>
+
+              <div className="space-y-5 mb-10 flex-grow text-left">
+                 <div className="flex items-center gap-4">
+                    <MessageSquare className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">チャットアンケート機能</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <PieChart className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">管理画面・分析ダッシュボード</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <QrCode className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">QRコード発行</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                     <Headphones className="w-6 h-6 text-gold shrink-0" />
+                     <span className="text-sm font-bold text-text-mid">設問・出口設計サポート</span>
+                 </div>
+              </div>
+
+              <a
+                href="#contact"
+                className="flex items-center justify-center w-full py-4 bg-white border-2 border-gold text-gold font-bold tracking-widest rounded-full hover:bg-gold hover:text-white shadow-sm transition-all"
+              >
+                申し込む <ArrowRight className="w-4 h-4 ml-2" />
+              </a>
            </FadeIn>
 
            {/* Annual Plan (Highlighted) */}
-           <FadeIn delay={0.2} className="bg-white p-10 rounded-[2rem] border-2 border-gold relative shadow-gold transform md:-translate-y-4">
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold text-white text-xs font-bold px-6 py-2 rounded-full whitespace-nowrap shadow-md tracking-widest">
-               おすすめ
-             </div>
-             <h3 className="text-lg font-bold text-gold uppercase tracking-widest mb-4">Annual</h3>
-             <div className="flex items-baseline justify-center gap-1 mb-2">
-               <span className="text-lg text-text-dark">¥</span>
-               <span className="text-6xl font-serif font-semibold text-text-dark">2,980</span>
-             </div>
-             <p className="text-xs text-text-light mb-8 font-medium">/ 店舗 / 月（年間契約）</p>
-             <ul className="text-left space-y-4 mb-8 text-sm text-text-mid font-medium">
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gold" />チャットアンケート機能</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gold" />管理画面・分析ダッシュボード</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gold" />QRコード発行</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gold" />設問・出口設計サポート</li>
-               <li className="flex items-center gap-3"><CheckCircle className="w-4 h-4 text-gold" /><strong>継続的な改善提案</strong></li>
-             </ul>
-             <a 
-               href="#contact" 
-               className="flex items-center justify-center w-full py-4 bg-gold text-white font-bold tracking-widest rounded-full hover:bg-gold-dark shadow-lg transition-all"
-             >
-               申し込む <ArrowRight className="w-4 h-4 ml-2" />
-             </a>
+           <FadeIn delay={0.2} className="bg-white p-8 md:p-10 rounded-[2.5rem] border-2 border-gold relative shadow-gold transform md:-translate-y-4 flex flex-col">
+               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gold text-white text-xs font-bold px-6 py-2 rounded-full whitespace-nowrap shadow-md tracking-widest">
+                 おすすめ
+               </div>
+               <h3 className="text-center text-lg font-bold text-gold uppercase tracking-widest mb-6">Annual</h3>
+               <div className="flex items-baseline justify-center gap-1 mb-2 text-text-dark">
+                 <span className="text-3xl font-bold">¥</span>
+                 <span className="text-7xl font-serif font-bold tracking-tighter">2,980</span>
+                 <span className="text-sm font-bold ml-2">/ 店舗 / 月</span>
+              </div>
+              <p className="text-center text-xs text-text-light font-bold mb-10">（年間契約）</p>
+
+              <div className="space-y-5 mb-10 flex-grow text-left">
+                 <div className="flex items-center gap-4">
+                    <MessageSquare className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">チャットアンケート機能</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <PieChart className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">管理画面・分析ダッシュボード</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <QrCode className="w-6 h-6 text-gold shrink-0" />
+                    <span className="text-sm font-bold text-text-mid">QRコード発行</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                     <Headphones className="w-6 h-6 text-gold shrink-0" />
+                     <span className="text-sm font-bold text-text-mid">設問・出口設計サポート</span>
+                 </div>
+                 <div className="flex items-center gap-4">
+                     <Sparkles className="w-6 h-6 text-gold shrink-0" />
+                     <span className="text-sm font-bold text-text-mid">継続的な改善提案</span>
+                 </div>
+              </div>
+
+               <a
+                 href="#contact"
+                 className="flex items-center justify-center w-full py-4 bg-gold text-white font-bold tracking-widest rounded-full hover:bg-gold-dark shadow-lg transition-all"
+               >
+                 申し込む <ArrowRight className="w-4 h-4 ml-2" />
+               </a>
            </FadeIn>
         </div>
         
