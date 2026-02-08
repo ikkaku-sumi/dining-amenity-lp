@@ -829,9 +829,20 @@ const SupportFlow: React.FC = () => {
 };
 
 const VoicePower: React.FC = () => {
+  // Bubbles data for the "Feedback" card animation
+  const bubbles = [
+    { text: "美味しかったです！", left: "10%", scale: 1, opacity: 1, duration: 8, delay: 0, blur: false },
+    { text: "ありがとう", left: "70%", scale: 0.9, opacity: 0.9, duration: 9, delay: 3, blur: false },
+    { text: "また来ます✨", left: "25%", scale: 0.7, opacity: 0.6, duration: 11, delay: 1.5, blur: true },
+    { text: "最高！", left: "85%", scale: 0.6, opacity: 0.5, duration: 10, delay: 5, blur: true },
+    { text: "ごちそうさま", left: "45%", scale: 0.8, opacity: 0.7, duration: 12, delay: 7, blur: false },
+    { text: "素敵なお店", left: "60%", scale: 0.65, opacity: 0.4, duration: 13, delay: 2, blur: true },
+    { text: "感動しました", left: "5%", scale: 0.6, opacity: 0.5, duration: 14, delay: 6, blur: true },
+  ];
+
   return (
     <section className="py-24 bg-white overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-[1280px] mx-auto px-6">
         <div className="text-center mb-16">
           <FadeIn>
             <Pill>提供価値</Pill>
@@ -842,118 +853,176 @@ const VoicePower: React.FC = () => {
           </FadeIn>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 items-stretch relative">
-           <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-gold items-center justify-center w-12 h-12 bg-white rounded-full shadow-md border border-gold/20">
-            <ArrowRight size={24} />
-          </div>
-
-          <FadeIn className="flex-1 bg-offwhite rounded-[2rem] p-8 md:p-10 border border-gray-100 flex flex-col relative overflow-hidden group">
-             <div className="flex items-center gap-4 mb-8">
-               <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
-                 <MessageCircle size={24} />
+        <div className="flex flex-col md:flex-row gap-8 items-stretch justify-center relative">
+          
+          {/* Card 1: Feedback Collection */}
+          <FadeIn className="flex-1 max-w-[580px] w-full bg-[#FAFAF7] rounded-[3rem] p-8 md:p-12 border border-gray-100 flex flex-col relative overflow-hidden group hover:shadow-lg transition-all duration-500">
+             {/* Header */}
+             <div className="flex items-center gap-5 mb-10">
+               <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0 border border-gold/20">
+                 <MessageCircle size={30} strokeWidth={1.5} />
                </div>
-               <h3 className="text-xl font-bold text-text-dark font-serif tracking-wide">フィードバック・応援の収集</h3>
+               <h3 className="text-2xl font-bold text-text-dark font-serif tracking-wide">
+                 フィードバック・<br className="sm:hidden"/>応援の収集
+               </h3>
              </div>
              
-             <div className="h-48 relative mb-8 bg-white/50 rounded-2xl border border-dashed border-gray-200 w-full flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold/5 to-transparent opacity-50"></div>
+             {/* Visual Area (Card Style - No Dotted Border) */}
+             <div className="h-72 relative mb-10 bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] w-full flex items-center justify-center overflow-hidden">
                 
+                {/* Glow behind center */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                {/* Floating Bubbles */}
+                {bubbles.map((bubble, i) => (
+                   <motion.div 
+                     key={i}
+                     initial={{ y: 160, opacity: 0, scale: bubble.scale * 0.8 }}
+                     animate={{ 
+                       y: -160, 
+                       opacity: [0, bubble.opacity, bubble.opacity, 0],
+                     }}
+                     transition={{ 
+                       duration: bubble.duration, 
+                       repeat: Infinity, 
+                       ease: "linear",
+                       delay: bubble.delay,
+                     }}
+                     style={{
+                       left: bubble.left,
+                       zIndex: bubble.blur ? 0 : 10,
+                     }}
+                     className={`absolute bg-white px-5 py-2.5 rounded-2xl rounded-bl-sm shadow-soft border border-gray-100 font-bold whitespace-nowrap flex items-center gap-2 ${bubble.blur ? 'blur-[1px] text-gray-400' : 'text-text-dark'}`}
+                  >
+                    <span className="text-xs md:text-sm">{bubble.text}</span>
+                  </motion.div>
+                ))}
+
+                {/* Central Button */}
                 <motion.div 
-                   animate={{ y: [20, -10, 20], opacity: [0.5, 1, 0.5] }}
-                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                   className="absolute top-8 left-8 bg-white px-4 py-2 rounded-2xl rounded-bl-sm shadow-sm text-xs font-bold text-text-dark border border-gray-100"
-                >
-                  美味しかった！
-                </motion.div>
-                 <motion.div 
-                   animate={{ y: [0, -15, 0], opacity: [0.6, 1, 0.6] }}
-                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                   className="absolute bottom-10 right-10 bg-white px-4 py-2 rounded-2xl rounded-br-sm shadow-sm text-xs font-bold text-text-dark border border-gray-100"
-                >
-                  ありがとう
-                </motion.div>
-                <motion.div 
-                   animate={{ scale: [0.9, 1, 0.9] }}
+                   animate={{ scale: [1, 1.05, 1], boxShadow: ["0 10px 25px -5px rgba(200, 170, 65, 0.2)", "0 10px 35px -5px rgba(200, 170, 65, 0.4)", "0 10px 25px -5px rgba(200, 170, 65, 0.2)"] }}
                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                   className="relative z-10 bg-white px-6 py-3 rounded-full shadow-gold border border-gold/20 text-sm font-bold text-gold flex items-center gap-2"
+                   className="relative z-20 bg-white px-8 py-4 rounded-full border border-gold/30 text-base font-bold text-gold flex items-center gap-3"
                 >
-                  <Heart size={16} className="fill-gold text-gold" />
+                  <Heart size={20} className="fill-gold text-gold" />
                   感謝の可視化
                 </motion.div>
              </div>
 
+             {/* Description & List */}
              <div className="flex-grow">
-               <p className="text-text-mid text-sm leading-loose mb-6">
+               <p className="text-gray-600 text-sm leading-8 mb-8 font-medium">
                  お客様の「ありがとう」や「改善点」を可視化<br/>
                  こだわりが伝わっているか、何が評価されているかを確認できます
                </p>
-               <ul className="space-y-3">
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>評価ポイントと課題の発見</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>こだわりが伝わっているかの確認</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>感謝の可視化でモチベーションUP</span>
-                  </li>
+               <ul className="space-y-4 pl-1">
+                  {[
+                    "評価ポイントと課題の発見",
+                    "こだわりが伝わっているかの確認",
+                    "感謝の可視化でモチベーションUP"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-4 text-sm font-bold text-text-dark/90">
+                      <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
+                      <span>{item}</span>
+                    </li>
+                  ))}
                </ul>
              </div>
           </FadeIn>
 
-          <FadeIn delay={0.2} className="flex-1 bg-offwhite rounded-[2rem] p-8 md:p-10 border border-gray-100 flex flex-col relative overflow-hidden group">
-             <div className="flex items-center gap-4 mb-8">
-               <div className="w-12 h-12 rounded-full bg-text-dark flex items-center justify-center text-white shrink-0">
-                 <Share2 size={24} />
+          {/* Connection Arrow (Desktop only) */}
+           <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-gold items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg border border-gray-50">
+            <ArrowRight size={28} />
+          </div>
+
+          {/* Card 2: Exit Strategy */}
+          <FadeIn delay={0.2} className="flex-1 max-w-[580px] w-full bg-[#FAFAF7] rounded-[3rem] p-8 md:p-12 border border-gray-100 flex flex-col relative overflow-hidden group hover:shadow-lg transition-all duration-500">
+             {/* Header */}
+             <div className="flex items-center gap-5 mb-10">
+               <div className="w-16 h-16 rounded-full bg-text-dark flex items-center justify-center text-white shrink-0 shadow-lg">
+                 <Share2 size={30} strokeWidth={1.5} />
                </div>
-               <h3 className="text-xl font-bold text-text-dark font-serif tracking-wide">声を広める出口</h3>
+               <h3 className="text-2xl font-bold text-text-dark font-serif tracking-wide">
+                 声を広める出口
+               </h3>
              </div>
 
-             <div className="h-48 relative mb-8 bg-white/50 rounded-2xl border border-dashed border-gray-200 w-full flex items-center justify-center">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-200/20 to-transparent opacity-50"></div>
+             {/* Visual Area (Card Style - No Dotted Border) */}
+             <div className="h-72 relative mb-10 bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] w-full flex items-center justify-center">
                 
-                <div className="flex gap-4 items-center justify-center">
-                   <div className="flex flex-col items-center gap-2">
-                     <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                       <MapPin className="text-blue-600" size={24} />
-                     </div>
-                     <span className="text-[10px] font-bold text-text-light tracking-wider">Google</span>
-                   </div>
-                    <div className="flex flex-col items-center gap-2 -mt-4">
-                     <div className="w-14 h-14 bg-white rounded-xl shadow-md border border-gray-100 flex items-center justify-center relative z-10">
-                       <Instagram className="text-pink-600" size={28} />
-                     </div>
-                     <span className="text-[10px] font-bold text-text-light tracking-wider">SNS</span>
-                   </div>
-                    <div className="flex flex-col items-center gap-2">
-                     <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                       <Smartphone className="text-green-500" size={24} />
-                     </div>
-                     <span className="text-[10px] font-bold text-text-light tracking-wider">LINE</span>
+                {/* Connecting Lines */}
+                <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-20" viewBox="0 0 400 300">
+                   <path d="M200 150 L100 220" stroke="#C8AA41" strokeWidth="2" strokeDasharray="5,5" />
+                   <path d="M200 150 L300 220" stroke="#C8AA41" strokeWidth="2" strokeDasharray="5,5" />
+                   <path d="M200 150 L200 80" stroke="#C8AA41" strokeWidth="2" strokeDasharray="5,5" />
+                </svg>
+
+                <div className="relative z-10 grid grid-cols-3 gap-8 items-center justify-center w-full max-w-[320px]">
+                   
+                   {/* Orbiting Icons */}
+                   <motion.div 
+                     animate={{ y: [0, -5, 0] }}
+                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                     className="col-span-3 flex justify-center mb-4"
+                   >
+                      <div className="flex flex-col items-center gap-3">
+                         <div className="w-14 h-14 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center">
+                           <MapPin className="text-blue-600" size={26} />
+                         </div>
+                         <span className="text-[10px] font-bold text-gray-400 tracking-wider">Google</span>
+                      </div>
+                   </motion.div>
+
+                   <div className="col-span-3 flex justify-between px-4">
+                      <motion.div 
+                         animate={{ y: [0, 5, 0] }}
+                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                         className="flex flex-col items-center gap-3"
+                      >
+                         <div className="w-14 h-14 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center">
+                           <Instagram className="text-pink-600" size={28} />
+                         </div>
+                         <span className="text-[10px] font-bold text-gray-400 tracking-wider">Instagram</span>
+                      </motion.div>
+                      
+                      {/* Central Node */}
+                      <div className="flex flex-col items-center gap-2 -mt-12">
+                         <div className="w-20 h-20 bg-text-dark rounded-full shadow-2xl border-4 border-white flex items-center justify-center text-white relative z-20">
+                            <Utensils size={32} strokeWidth={1.5} />
+                         </div>
+                         <span className="text-xs font-bold text-text-dark mt-2">お店</span>
+                      </div>
+
+                      <motion.div 
+                         animate={{ y: [0, 5, 0] }}
+                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                         className="flex flex-col items-center gap-3"
+                      >
+                         <div className="w-14 h-14 bg-white rounded-2xl shadow-md border border-gray-100 flex items-center justify-center">
+                           <Smartphone className="text-green-500" size={26} />
+                         </div>
+                         <span className="text-[10px] font-bold text-gray-400 tracking-wider">LINE</span>
+                      </motion.div>
                    </div>
                 </div>
              </div>
 
+             {/* Description & List */}
              <div className="flex-grow">
-               <p className="text-text-mid text-sm leading-loose mb-6">
+               <p className="text-gray-600 text-sm leading-8 mb-8 font-medium">
                  お店を気に入ったお客様が、自然と声を届けてくれる動線を用意します
                </p>
-               <ul className="space-y-3">
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>Google口コミ・SNSへの自然な誘導</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>声がお店の外へ広がっていく</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm font-medium text-text-dark">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
-                    <span>店舗ごとにカスタム可能な出口設計</span>
-                  </li>
+               <ul className="space-y-4 pl-1">
+                  {[
+                    "Google口コミ・SNSへの自然な誘導",
+                    "声がお店の外へ広がっていく",
+                    "店舗ごとにカスタム可能な出口設計"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-4 text-sm font-bold text-text-dark/90">
+                      <div className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0"></div>
+                      <span>{item}</span>
+                    </li>
+                  ))}
                </ul>
              </div>
           </FadeIn>
